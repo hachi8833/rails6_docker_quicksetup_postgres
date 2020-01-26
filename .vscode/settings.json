@@ -1,0 +1,17 @@
+{
+  "ruby.useLanguageServer": true,
+  "ruby.useBundler": false,
+  "ruby.intellisense": "rubyLocate",
+  "ruby.format": "rufo",
+  "files.associations": {
+    "*.html.erb": "html"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "editor.formatOnSave": true,
+
+  "ruby.lint": {
+    "rubocop": true
+  },
+}

@@ -1,0 +1,75 @@
+version: "4.2"
+
+environment:
+  RAILS_ENV: development
+
+compose:
+  files:
+    - docker-compose.yml
+
+interaction:
+  sh:
+    description: Open a Bash shell within a Rails container (with dependencies up)
+    service: runner
+    command: /bin/bash
+
+  bash:
+    description: Run an arbitrary script within a container (or open a shell without deps)
+    service: runner
+    command: /bin/bash
+    compose_run_options: [no-deps]
+
+  bundle:
+    description: Run bundler command
+    service: backend
+    command: bundle
+    compose_run_options: [no-deps]
+
+  rake:
+    description: Run rake command
+    service: backend
+    command: bundle exec rake
+
+  rails:
+    description: Run rails command
+    service: backend
+    command: bundle exec rails
+    subcommands:
+      s:
+        description: Start rails server
+        service: rails
+        compose_run_options: [service-ports]
+
+  yarn:
+    description: Run yarn command
+    service: backend
+    command: yarn
+    compose_run_options: [no-deps]
+
+  minitest:
+    description: Run minitest
+    service: backend
+    environment:
+      RAILS_ENV: test
+    command: bundle exec rails test
+
+  psql:
+    description: Run psql console
+    service: postgres
+    command: psql -h postgres -U postgres -d postgres
+
+  pack:
+    description: Run webpack
+    service: backend
+    command: webpack
+
+# Destructive!: just for a quick `rails new`
+provision:
+  - dip compose down --volumes
+  - dip compose up -d postgres
+  - dip bundle install
+  - dip rails new . -d postgresql --webpacker --skip-listen --skip-git
+  - dip yarn install
+  - dip sh -c "sed -i -e \"3i\   config.hosts << 'localhost'\" config/environments/development.rb"
+  - dip sh -c "sed -i -e \"4i\   config.web_console.whitelisted_ips = '0.0.0.0/0'\" config/environments/development.rb"
+  - dip sh -c "rails db:prepare 2> /dev/null; exit 0 && rails db:prepare && RAILS_ENV=test rails db:prepare"
