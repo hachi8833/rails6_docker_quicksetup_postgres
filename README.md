@@ -51,37 +51,14 @@ Assumed that bundler is included within Ruby 2.7 or later. If you want to specif
 - `BUNDLER_VERSION` in docker-compose.yml
 - `&& gem install bundler:$BUNDLER_VERSION` in .dockerdev/Dockerfile.
 
-### Install
-
-### A. Quick Install
+## Quick install
 
 - `dip provision`
 
 > Note: `--skip-listen` option is specified in the command to avoid the issue on macOS:
 > ref: [Code is not reloaded in dev with Docker on OS X · Issue \#25186 · rails/rails](https://github.com/rails/rails/issues/25186). Perhaps you can remove the option for Linux environments.
 
-### B. Custom Install
-
-- `dip compose build` to build a container.
-- `dip bundle install` to install gems for Rails.
-- `dip bundle exec rails new . --webpacker <options as you like>`.
-  - To macOS user: add `--skip-listen`
-- `dip yarn install` to install yarn.
-- Perform the following manually to activate local access via Docker:
-
-```sh
-dip sh -c "sed -i -e \"3i\   config.hosts << 'localhost'\" config/environments/development.rb"
-dip sh -c "sed -i -e \"4i\   config.web_console.whitelisted_ips = '0.0.0.0/0'\" config/environments/development.rb"
-```
-
-- Then manually create databases:
-
-```sh
-dip sh -c "rails db:prepare 2> /dev/null; exit 0 && rails db:prepare"
-dip sh -c "RAILS_ENV=test rails db:prepare"
-```
-
-> Known issue: currently, running `db:prepare` twice is needed for establishing the initial database connection.
+Known isue: currently, running `db:prepare` twice is needed for establishing the initial database connection.
 
 --------
 
@@ -92,26 +69,3 @@ That's all. Now you can run `rails s` command via `dip rails s`. You don't need 
 - You can see the available dip commands via `dip ls`.
 - .vscode contains a minimum set of conf and extensions. You can discard.
 - If you encounter any issues around caching, try checking bootsnap and spring gem.
-
-## Webpacker + Bootstrap + font-awesome
-
-You can configure Bootstrap 4 and font-awesome on Webpacker by running the following script:
-
-```sh
-dip yarn add bootstrap jquery popper.js @fortawesome/fontawesome-free
-
-mkdir app/javascript/src
-mkdir app/javascript/images
-
-echo "@import '~bootstrap/scss/bootstrap';" > app/javascript/src/application.sass
-echo "@import '~@fortawesome/fontawesome-free/scss/fontawesome';" >> app/javascript/src/application.sass
-
-dip sh -c 'sed -i -e "s/stylesheet_link_tag/stylesheet_pack_tag/g" app/views/layouts/application.html.erb'
-
-dip sh -c "sed -i -e \"10i\import 'bootstrap';\" app/javascript/packs/application.js"
-dip sh -c "sed -i -e \"11i\import '../src/application.sass';\" app/javascript/packs/application.js"
-dip sh -c "sed -i -e \"12i\import '@fortawesome/fontawesome-free/js/all';\" app/javascript/packs/application.js"
-```
-
-Then you can remove app/assets and deactivate Sprockets if unnecessary.
-

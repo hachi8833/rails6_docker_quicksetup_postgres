@@ -70,6 +70,3 @@ provision:
   - dip bundle install
   - dip rails new . -d postgresql --webpacker --skip-listen --skip-git
   - dip yarn install
-  - dip sh -c "sed -i -e \"3i\   config.hosts << 'localhost'\" config/environments/development.rb"
-  - dip sh -c "sed -i -e \"4i\   config.web_console.whitelisted_ips = '0.0.0.0/0'\" config/environments/development.rb"
-  - dip sh -c "rails db:prepare 2> /dev/null; exit 0 && rails db:prepare && RAILS_ENV=test rails db:prepare"

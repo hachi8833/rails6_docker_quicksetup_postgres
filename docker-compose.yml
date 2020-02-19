@@ -12,8 +12,6 @@ x-var: &NODE_MAJOR
   12
 x-var: &YARN_VERSION
   1.21.1
-x-var: &BUNDLER_VERSION
-  2.1.2
 
 x-app: &app
   build:
@@ -24,7 +22,6 @@ x-app: &app
       PG_MAJOR: *PG_MAJOR
       NODE_MAJOR: *NODE_MAJOR
       YARN_VERSION: *YARN_VERSION
-      # BUNDLER_VERSION: *BUNDLER_VERSION
   environment: &env
     NODE_ENV: development
     RAILS_ENV: ${RAILS_ENV:-development}

@@ -3,7 +3,6 @@ FROM ruby:$RUBY_VERSION
 
 ARG PG_MAJOR
 ARG NODE_MAJOR
-ARG BUNDLER_VERSION
 ARG YARN_VERSION
 
 # Common dependencies
@@ -39,6 +38,8 @@ RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrad
   nodejs \
   yarn=$YARN_VERSION-1 \
   $(cat /tmp/Aptfile | xargs) && \
+  npm install -g n && \
+  n lts && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   truncate -s 0 /var/log/*log
@@ -56,8 +57,6 @@ ENV PATH /app/bin:$PATH
 
 # Upgrade RubyGems
 RUN gem update --system
-# Uncomment this line if you would like to specify other version of bundler
-# && gem install bundler:$BUNDLER_VERSION
 
 # Create a directory for the app code
 RUN mkdir -p /app
