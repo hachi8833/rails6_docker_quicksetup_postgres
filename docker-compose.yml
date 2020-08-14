@@ -11,7 +11,7 @@ x-var: &POSTGRES
 x-var: &NODE_MAJOR
   12
 x-var: &YARN_VERSION
-  1.21.1
+  1.22.4
 
 x-app: &app
   build:
